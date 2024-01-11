@@ -1,0 +1,24 @@
+#enquiry_form {
+  color: aqua;
+  padding: 30px;
+}
+
+.name-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.name-container label {
+  margin-right: 10px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.form-row label {
+  margin-right: 10px;
+}
