@@ -38,6 +38,7 @@ if(!class_exists('TiizaForm')) {
 
       add_action('admin_init', array($this, 'setup_search'));
 
+
     }
 
 
@@ -165,9 +166,18 @@ if(!class_exists('TiizaForm')) {
     public function display_meta_box()
     {
       $postmetas = get_post_meta( get_the_ID() );
+      
 
       echo '<ul>';
 
+        // Display the image if it exists
+        $file_url = get_post_meta(get_the_ID(), 'image', true);
+
+        if (!empty($file_url)) {
+           echo '<li><strong>Image</strong>:<br /><img src="' . esc_url($file_url) . '" alt="Uploaded Image"></li>';
+        }
+
+        // Display other fields
         echo '<li><strong>FirstName</strong>:<br />' . get_post_meta( get_the_ID(), 'first_name', true) . '</li>';
         echo '<li><strong>MiddleName</strong>:<br />' . get_post_meta( get_the_ID(), 'middle_name', true) . '</li>';
         echo '<li><strong>LastName</strong>:<br />' . get_post_meta( get_the_ID(), 'last_name', true) . '</li>';
@@ -178,10 +188,11 @@ if(!class_exists('TiizaForm')) {
         echo '<li><strong>Category</strong>:<br />' . get_post_meta( get_the_ID(), 'category', true) . '</li>';
         echo '<li><strong>Color</strong>:<br />' . get_post_meta( get_the_ID(), 'color', true) . '</li>';
         echo '<li><strong>Gender</strong>:<br />' . get_post_meta( get_the_ID(), 'gender', true) . '</li>';
-        echo '<li><strong>Image</strong>:<br />' . get_post_meta( get_the_ID(), 'image', true) . '</li>';
         echo '<li><strong>Message</strong>:<br />' . get_post_meta( get_the_ID(), 'message', true) . '</li>';
 
       echo '</ul>';
+
+
     }
    
 
@@ -223,7 +234,6 @@ if(!class_exists('TiizaForm')) {
     }
 
 
-
     public function register_rest_api()
     {
       register_rest_route('tiiza-form/v1', 'submit-form', array(
@@ -237,6 +247,7 @@ if(!class_exists('TiizaForm')) {
 
       $params = $data->get_params();
 
+      // Sanitize and validate data
       $field_first_name = sanitize_text_field($data['first_name']);
       $field_middle_name = sanitize_text_field($data['middle_name']);
       $field_last_name = sanitize_text_field($data['last_name']);
@@ -266,30 +277,31 @@ if(!class_exists('TiizaForm')) {
         return new WP_Rest_Response('Invalid nonce', 422);
       } 
 
+       
+      //image upload
+       if( isset( $_FILES['image'] ))
+       {
 
-       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Check if the file is uploaded successfully
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = 'uploads/';
-                $uploadFile = $uploadDir . basename($_FILES['image']['name']);
+         //upload code
+         $file = $_FILES['image'];
 
-                // Move the uploaded file to the specified directory
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
-                    // Add image path to the response
-                    $response['imagePath'] = $uploadFile;
-                } else {
-                    // Return error response
-                    return new WP_Rest_Response(['success' => false, 'message' => 'Error uploading image'], 500);
-                }
-            } else {
-                // Return error response
-                return new WP_Rest_Response(['success' => false, 'message' => 'No image uploaded'], 400);
-            }
-        } else {
-            // Return error response if the request method is not POST
-            return new WP_Rest_Response(['success' => false, 'message' => 'Invalid request method'], 405);
+         $override = array(
+          'test_form' => false,
+         );
+
+         $upload_file = wp_handle_upload($file, $override);
+
+         if( !is_wp_error( $upload_file))
+        {
+          
+           update_post_meta($post_id, 'image', $upload_file['url']);
+
+            // Include the image URL in the response
+            $response['image'] = $upload_file['url'];
+
         }
-        
+
+       }
  
       unset($params['_wpnonce']);
       unset($params['_wp_http_referer']);
@@ -376,5 +388,6 @@ if(!class_exists('TiizaForm')) {
 
 }
 
-  new TiizaForm();
+new TiizaForm();
+
 }

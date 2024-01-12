@@ -2,7 +2,7 @@
 <div id="form_success" style="background:green; color:#fff;"></div>
 <div id="form_error" style="background:red; color:#fff;"></div>
 
-<form id="enquiry_form" method="post" action="" enctype="multipart/form-data">
+<form id="enquiry_form" enctype="multipart/form-data">
 
    <?php wp_nonce_field('wp_rest');?>
 
@@ -49,9 +49,14 @@
   <input type="radio" name="gender" value="male"> Male
   <input type="radio" name="gender" value="female"> Female<br>
 
-   <label for="image">Upload Image:</label>
-        <input type="file" name="image" accept="image/*" required><br>
-  </label>
+   <div class="form-row">
+      <label for="image">Upload Image:</label>
+      <div>
+         <input type="file" name="image" accept="image/*" required><br>
+         <!-- Display uploaded image here -->
+         <div id="image-container"></div>
+      </div>
+   </div>
 
   <label>Message</label><br />
   <textarea name="message"></textarea><br /><br />
@@ -69,24 +74,28 @@
     $("#enquiry_form").submit( function(event){
 
       event.preventDefault();
-      
-      
-      var formData = new FormData(this);
+       
+      var form = $(this);
+      var formData = new FormData(form[0]);
 
 
       $.ajax({
         
-      method: "POST",
+      type: "POST",
       url: "<?php echo get_rest_url(null, 'tiiza-form/v1/submit-form');?>",
       data: formData,
       contentType: false,
       processData: false,
       success: function(response){
 
-        // Display uploaded image
-        $("#imageDisplay").html('<img src="' + response.imagePath + '" alt="Uploaded Image">');
         
         $("#enquiry_form").hide();
+
+           // Display uploaded image
+        if (response.message === 'Form submitted successfully' && response.image) {
+            $("#image-container").html('<img src="' + response.image + '" alt="Uploaded Image">');
+        }
+
 
         $("#form_success").html(response.message).fadeIn();
       },
