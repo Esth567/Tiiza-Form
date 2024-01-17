@@ -2,7 +2,7 @@
 <div id="form_success" style="background:green; color:#fff;"></div>
 <div id="form_error" style="background:red; color:#fff;"></div>
 
-<form id="enquiry_form" enctype="multipart/form-data">
+<form id="enquiry_form" method="post" enctype="multipart/form-data">
 
    <?php wp_nonce_field('wp_rest');?>
 
@@ -49,14 +49,12 @@
   <input type="radio" name="gender" value="male"> Male
   <input type="radio" name="gender" value="female"> Female<br>
 
-   <div class="form-row">
+  
       <label for="image">Upload Image:</label>
-      <div>
-         <input type="file" name="image" accept="image/*" required><br>
-         <!-- Display uploaded image here -->
-         <div id="image-container"></div>
-      </div>
-   </div>
+      <input type="file" id="myFile" name="userfile">
+      <input type="submit" value="View Image">
+      <input type="hidden" name="action" value="handle_image_viewing">
+
 
   <label>Message</label><br />
   <textarea name="message"></textarea><br /><br />
@@ -91,17 +89,10 @@
         
         $("#enquiry_form").hide();
 
-           // Display uploaded image
-        if (response.message === 'Form submitted successfully' && response.image) {
-            $("#image-container").html('<img src="' + response.image + '" alt="Uploaded Image">');
-        }
-
-
         $("#form_success").html(response.message).fadeIn();
       },
-      error: function(xhr, status, error){
-         console.error(xhr.responseText);
-
+      error: function(){
+        
         $("#form_error").html("Error submitting your form").fadeIn();
         
       }

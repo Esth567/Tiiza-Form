@@ -169,15 +169,6 @@ if(!class_exists('TiizaForm')) {
       
 
       echo '<ul>';
-
-        // Display the image if it exists
-        $file_url = get_post_meta(get_the_ID(), 'image', true);
-
-        if (!empty($file_url)) {
-           echo '<li><strong>Image</strong>:<br /><img src="' . esc_url($file_url) . '" alt="Uploaded Image"></li>';
-        }
-
-        // Display other fields
         echo '<li><strong>FirstName</strong>:<br />' . get_post_meta( get_the_ID(), 'first_name', true) . '</li>';
         echo '<li><strong>MiddleName</strong>:<br />' . get_post_meta( get_the_ID(), 'middle_name', true) . '</li>';
         echo '<li><strong>LastName</strong>:<br />' . get_post_meta( get_the_ID(), 'last_name', true) . '</li>';
@@ -188,6 +179,7 @@ if(!class_exists('TiizaForm')) {
         echo '<li><strong>Category</strong>:<br />' . get_post_meta( get_the_ID(), 'category', true) . '</li>';
         echo '<li><strong>Color</strong>:<br />' . get_post_meta( get_the_ID(), 'color', true) . '</li>';
         echo '<li><strong>Gender</strong>:<br />' . get_post_meta( get_the_ID(), 'gender', true) . '</li>';
+        echo '<li><strong>Image</strong>:<br />' . get_post_meta( get_the_ID(), 'image', true) . '</li>';
         echo '<li><strong>Message</strong>:<br />' . get_post_meta( get_the_ID(), 'message', true) . '</li>';
 
       echo '</ul>';
@@ -277,31 +269,41 @@ if(!class_exists('TiizaForm')) {
         return new WP_Rest_Response('Invalid nonce', 422);
       } 
 
-       
-      //image upload
-       if( isset( $_FILES['image'] ))
-       {
-
-         //upload code
-         $file = $_FILES['image'];
-
-         $override = array(
-          'test_form' => false,
-         );
-
-         $upload_file = wp_handle_upload($file, $override);
-
-         if( !is_wp_error( $upload_file))
-        {
-          
-           update_post_meta($post_id, 'image', $upload_file['url']);
-
-            // Include the image URL in the response
-            $response['image'] = $upload_file['url'];
-
+       // Validate tracker_id against the database
+        $tracker_id = sanitize_text_field($data['tracker_id']);
+        if (!$this->is_valid_tracker_id($tracker_id)) {
+            return new WP_Rest_Response('Error: Tracker ID does not exist in the database.', 403);
         }
 
+      
+        if ( isset( $_POST['handle_image_viewing'] ) ) {
+
+           $uploaded_file = $_FILES['userfile'];
+           
+           $upload_overrides = array( 'test_form' => false );
+
+           $movefile = wp_handle_upload( $uploaded_file, $upload_overrides );
+
+
+           if(!is_wp_error($movefile))
+           {
+              update_option('image_url', $movefile['url']);
+           }
+
+
+           $file_url = get_option('image_url');
+           
+
+          if ( !empty( $file_url) ) {
+              echo '<img src="'. esc_url($file_url) . '" />';
+          } else {
+              echo 'Error uploading file.';
+         }
+           
        }
+
+       
+   
  
       unset($params['_wpnonce']);
       unset($params['_wp_http_referer']);
@@ -384,6 +386,30 @@ if(!class_exists('TiizaForm')) {
     $pattern = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
     return preg_match($pattern, $email);
   } 
+
+
+  private function is_valid_tracker_id($tracker_id)
+    {
+        // Your existing database connection code
+        $servername = "your_database_server";
+        $username = "estilo";
+        $password = "your_password";
+        $dbname = "your_database_name";
+
+        $conn = new mysqli($servername, $username, $password, $dbname); 
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        // Check if the tracker_id exists in the database
+        $sql = "SELECT * FROM trackers WHERE tracker_id = '$tracker_id'";
+        $result = $conn->query($sql);
+
+        $conn->close();
+
+        return $result->num_rows > 0;
+    }
 
 
 }
