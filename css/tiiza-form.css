@@ -5,20 +5,44 @@
 
 .name-container {
   display: flex;
-  flex-direction: row;
-  align-items: center;
 }
 
-.name-container label {
+.name-field {
   margin-right: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100px; /* Adjust the width as needed */
+  padding: 10px;
+}
+
+.form-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  margin-right: 20px; /* Optional: Add spacing between form groups */
 }
 
 .form-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex: 1; /* Distribute available space equally among form rows */
+  margin-right: 20px; /* Optional: Add spacing between form rows */
 }
 
-.form-row label {
-  margin-right: 10px;
+.form-group1 {
+  flex: 1; /* Distribute available space equally among form rows */
+  margin-right: 20px; /* Optional: Add spacing between form rows */
+}
+
+input,
+select {
+  width: 100%; /* Take up the full width available in the form group */
+  padding: 5px;
+  box-sizing: border-box; /* Include padding and border in element's total width */
 }

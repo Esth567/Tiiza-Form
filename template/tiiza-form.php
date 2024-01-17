@@ -23,37 +23,58 @@
   </div>
 </div>
 
-  <label>Email</label><br />
-  <input type="text" name="email" placeholder="Eg.john@ymail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address" required><br /><br />
+<div class="form-container">
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" placeholder="Eg.john@ymail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address" required>
+  </div>
 
-  <label>Phone</label><br />
-  <input type="text" name="phone"><br /><br />
+  <div class="form-group">
+    <label for="phone">Phone</label>
+    <input type="text" id="phone" name="phone">
+  </div>
+</div>
 
-  <label for="address">House Address</label>
-  <input type="text" name="address" placeholder="Eg.22, James Street, Mushin, Lagos" required><br /><br /> 
+  <div class="form-group1">
+    <label for="address">Address</label>
+    <input type="text" id="address" name="address" placeholder="Enter your address" required>
+  </div>
 
+  <div class="form-group1">
+    <label for="state">State</label>
+    <input type="text" id="state" name="state" placeholder="Jos" required>
+  </div>
+
+  <div class="form-group1">
+    <label for="country">Country</label>
+    <input type="text" id="country" name="country" placeholder="Eg Nigeria" required>
+  </div>
+
+ 
   <div class="form-row">
-      <label for="tracker_id">Tracker ID</label>
-      <input type="text" id="tracker_id" name="tracker_id" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$" title="Please enter a valid Tracker ID" required>
+    <label for="tracker_id">Tracker I D</label>
+    <input type="text" id="tracker_id" name="tracker_id" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$" title="Please enter a valid Tracker ID" required>
   </div>
 
   <div class="form-row">
-      <label for="category">Item tag</label>
-      <input type="text" id="category" name="category" placeholder="Eg. Bag">
+    <label for="category">Item tag</label>
+    <input type="text" id="category" name="category" placeholder="Eg. Bag">
   </div>
 
-  <label>Color</label><br />
-  <input type="text" name="color" placeholder="Color of the item"><br /><br />
+  <div class="form-row">
+    <label for="color">Color</label>
+    <input type="text" id="color" name="color" placeholder="Color of the item">
+  </div>
+
 
   <label for="gender">Gender:</label>
   <input type="radio" name="gender" value="male"> Male
   <input type="radio" name="gender" value="female"> Female<br>
 
   
-      <label for="image">Upload Image:</label>
-      <input type="file" id="myFile" name="userfile">
-      <input type="submit" value="View Image">
-      <input type="hidden" name="action" value="handle_image_viewing">
+  <label for="image">Upload Image:</label>
+  <input type="file" id="myFile" name="userfile">
+  <input type="hidden" name="action" value="handle_image_viewing">
 
 
   <label>Message</label><br />

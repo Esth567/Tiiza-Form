@@ -108,6 +108,14 @@ if(!class_exists('TiizaForm')) {
                  echo esc_html(get_post_meta($post_id, 'address', true));
                break;
 
+               case 'state':
+                 echo esc_html(get_post_meta($post_id, 'state', true));
+               break;
+
+               case 'country':
+                 echo esc_html(get_post_meta($post_id, 'country', true));
+               break;
+
               case 'tracker_id':
                  echo esc_html(get_post_meta($post_id, 'tracker_id', true));
                break;
@@ -146,6 +154,8 @@ if(!class_exists('TiizaForm')) {
         'email' => __('Email', 'textdomain'),
         'phone' => __('Phone', 'textdomain'),
         'address' => __('Address', 'textdomain'),
+        'state' => __('State', 'textdomain'),
+        'country' => __('Country', 'textdomain'),
         'tracker_id' => __('Tracker_ID', 'textdomain'),
         'category' => __('Category', 'textdomain'),
         'color' => __('Color', 'textdomain'),
@@ -175,6 +185,8 @@ if(!class_exists('TiizaForm')) {
         echo '<li><strong>Email</strong>:<br />' . get_post_meta( get_the_ID(), 'email', true) . '</li>';
         echo '<li><strong>Phone</strong>:<br />' . get_post_meta( get_the_ID(), 'phone', true) . '</li>'; 
         echo '<li><strong>Address</strong>:<br />' . get_post_meta( get_the_ID(), 'address', true) . '</li>';
+        echo '<li><strong>State</strong>:<br />' . get_post_meta( get_the_ID(), 'state', true) . '</li>';
+        echo '<li><strong>Country</strong>:<br />' . get_post_meta( get_the_ID(), 'country', true) . '</li>';
         echo '<li><strong>Tracker_ID</strong>:<br />' . get_post_meta( get_the_ID(), 'tracker_id', true) . '</li>';
         echo '<li><strong>Category</strong>:<br />' . get_post_meta( get_the_ID(), 'category', true) . '</li>';
         echo '<li><strong>Color</strong>:<br />' . get_post_meta( get_the_ID(), 'color', true) . '</li>';
@@ -246,6 +258,8 @@ if(!class_exists('TiizaForm')) {
       $field_email = sanitize_email($data['email']);
       $field_phone = sanitize_text_field($data['phone']);
       $field_address = sanitize_text_field($data['address']);
+      $field_state = sanitize_text_field($data['state']);
+      $field_country = sanitize_text_field($data['country']);
       $field_tracker_id = sanitize_text_field($data['tracker_id']);
       $field_category = sanitize_text_field($data['category']);
       $field_color = sanitize_text_field($data['color']);
