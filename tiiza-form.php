@@ -156,7 +156,7 @@ if(!class_exists('TiizaForm')) {
         'address' => __('Address', 'textdomain'),
         'state' => __('State', 'textdomain'),
         'country' => __('Country', 'textdomain'),
-        'tracker_id' => __('Tracker_ID', 'textdomain'),
+        'tracker_id' => __('Tracker ID', 'textdomain'),
         'category' => __('Category', 'textdomain'),
         'color' => __('Color', 'textdomain'),
         'gender' => __('Gender', 'textdomain'),
@@ -263,6 +263,8 @@ if(!class_exists('TiizaForm')) {
       $field_tracker_id = sanitize_text_field($data['tracker_id']);
       $field_category = sanitize_text_field($data['category']);
       $field_color = sanitize_text_field($data['color']);
+      $field_gender = sanitize_text_field($data['gender']);
+      $field_image = sanitize_file_name($data['image']);
       $field_message = sanitize_textarea_field($data['message']);
 
        // validate phone number
@@ -406,7 +408,7 @@ if(!class_exists('TiizaForm')) {
     {
         // Your existing database connection code
         $servername = "your_database_server";
-        $username = "estilo";
+        $username = "your_username_server";
         $password = "your_password";
         $dbname = "your_database_name";
 

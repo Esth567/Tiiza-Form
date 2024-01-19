@@ -69,10 +69,11 @@
   </div>
   </div>
 
-
-  <label for="gender">Gender:</label>
-  <input type="radio" name="gender" value="male"> Male
-  <input type="radio" name="gender" value="female"> Female<br>
+ <div class="gender-container">
+    <label for="gender">Gender:</label>
+    <input type="radio" name="gender" value="male"> Male
+    <input type="radio" name="gender" value="female"> Female<br>
+  </div>
 
   <div class="image-container">
     <label for="image">Upload Image:</label>
@@ -80,9 +81,10 @@
     <input type="hidden" name="action" value="handle_image_viewing">
   </div>
 
-
-  <label>Message</label><br />
-  <textarea name="message"></textarea><br /><br />
+  <div class="message-container">
+    <label>Message</label><br />
+    <textarea name="message"></textarea><br /><br />
+  </div
 
   <button type="submit">Submit form</button>
 

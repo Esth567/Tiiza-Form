@@ -1,12 +1,12 @@
 #enquiry_form {
   color: aqua;
-  padding: 40px;
+  padding: 50px;
 }
 
 .name-container {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .name-field {
@@ -27,13 +27,13 @@ input {
 .form-container {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .form-container1 {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .form-group {
@@ -44,7 +44,7 @@ input {
 .form-container2 {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .form-row {
@@ -57,6 +57,10 @@ input {
   margin-right: 20px; /* Optional: Add spacing between form rows */
 }
 
-.image-container {
-  margin-bottom: 10px;
+.gender-container {
+  margin-bottom: 20px;
+}
+
+.message-container {
+  margin-top: 20px;
 }
