@@ -1,14 +1,17 @@
 #enquiry_form {
   color: aqua;
-  padding: 30px;
+  padding: 40px;
 }
 
 .name-container {
   display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
 .name-field {
-  margin-right: 10px;
+  flex: 1; /* Distribute available space equally among form rows */
+  margin-right: 20px;
 }
 
 label {
@@ -24,10 +27,24 @@ input {
 .form-container {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.form-container1 {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
 .form-group {
+  flex: 1;
   margin-right: 20px; /* Optional: Add spacing between form groups */
+}
+
+.form-container2 {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
 .form-row {
@@ -40,9 +57,6 @@ input {
   margin-right: 20px; /* Optional: Add spacing between form rows */
 }
 
-input,
-select {
-  width: 100%; /* Take up the full width available in the form group */
-  padding: 5px;
-  box-sizing: border-box; /* Include padding and border in element's total width */
+.image-container {
+  margin-bottom: 10px;
 }

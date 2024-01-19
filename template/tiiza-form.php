@@ -35,6 +35,7 @@
   </div>
 </div>
 
+<div class="form-container1">
   <div class="form-group1">
     <label for="address">Address</label>
     <input type="text" id="address" name="address" placeholder="Enter your address" required>
@@ -42,17 +43,18 @@
 
   <div class="form-group1">
     <label for="state">State</label>
-    <input type="text" id="state" name="state" placeholder="Jos" required>
+    <input type="text" id="state" name="state" placeholder="Eg Jos" required>
   </div>
 
   <div class="form-group1">
     <label for="country">Country</label>
     <input type="text" id="country" name="country" placeholder="Eg Nigeria" required>
   </div>
+</div>
 
- 
+ <div class="form-container2">
   <div class="form-row">
-    <label for="tracker_id">Tracker I D</label>
+    <label for="tracker_id">Tracker ID</label>
     <input type="text" id="tracker_id" name="tracker_id" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$" title="Please enter a valid Tracker ID" required>
   </div>
 
@@ -65,16 +67,18 @@
     <label for="color">Color</label>
     <input type="text" id="color" name="color" placeholder="Color of the item">
   </div>
+  </div>
 
 
   <label for="gender">Gender:</label>
   <input type="radio" name="gender" value="male"> Male
   <input type="radio" name="gender" value="female"> Female<br>
 
-  
-  <label for="image">Upload Image:</label>
-  <input type="file" id="myFile" name="userfile">
-  <input type="hidden" name="action" value="handle_image_viewing">
+  <div class="image-container">
+    <label for="image">Upload Image:</label>
+    <input type="file" id="myFile" name="userfile">
+    <input type="hidden" name="action" value="handle_image_viewing">
+  </div>
 
 
   <label>Message</label><br />
