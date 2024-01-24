@@ -267,6 +267,13 @@ if(!class_exists('TiizaForm')) {
       $field_image = sanitize_file_name($data['image']);
       $field_message = sanitize_textarea_field($data['message']);
 
+
+       // Validate name fields
+    if (!$this->is_valid_name($field_first_name) || !$this->is_valid_name($field_middle_name) || !$this->is_valid_name($field_last_name)) {
+        return new WP_Rest_Response('Invalid name field(s)', 400);
+    }
+
+
        // validate phone number
       if (!$this->is_valid_phone_number($field_phone)) 
       {
@@ -285,41 +292,34 @@ if(!class_exists('TiizaForm')) {
         return new WP_Rest_Response('Invalid nonce', 422);
       } 
 
-       // Validate tracker_id against the database
-        $tracker_id = sanitize_text_field($data['tracker_id']);
-        if (!$this->is_valid_tracker_id($tracker_id)) {
+     if (isset($_FILES['userfile'])) {
+    $uploaded_file = $_FILES['userfile'];
+
+    $upload_overrides = array('test_form' => false);
+
+    $movefile = wp_handle_upload($uploaded_file, $upload_overrides);
+
+    if (!is_wp_error($movefile)) {
+        update_option('image_url', $movefile['url']);
+    }
+
+    $file_url = get_option('image_url');
+
+    if (!empty($file_url)) {
+        echo '<img src="' . esc_url($file_url) . '" />';
+    } else {
+        echo 'Error uploading file.';
+    }
+}
+
+
+      // Validate tracker_id against the database
+      if (!$this->is_valid_tracker_id($tracker_id)) {
             return new WP_Rest_Response('Error: Tracker ID does not exist in the database.', 403);
         }
 
-      
-        if ( isset( $_POST['handle_image_viewing'] ) ) {
-
-           $uploaded_file = $_FILES['userfile'];
-           
-           $upload_overrides = array( 'test_form' => false );
-
-           $movefile = wp_handle_upload( $uploaded_file, $upload_overrides );
 
 
-           if(!is_wp_error($movefile))
-           {
-              update_option('image_url', $movefile['url']);
-           }
-
-
-           $file_url = get_option('image_url');
-           
-
-          if ( !empty( $file_url) ) {
-              echo '<img src="'. esc_url($file_url) . '" />';
-          } else {
-              echo 'Error uploading file.';
-         }
-           
-       }
-
-       
-   
  
       unset($params['_wpnonce']);
       unset($params['_wp_http_referer']);
@@ -404,13 +404,20 @@ if(!class_exists('TiizaForm')) {
   } 
 
 
+ private function is_valid_name($name)
+ {
+    // Use regular expression to validate name format
+    $pattern = '/^[A-Za-z]{3,}$/';
+    return preg_match($pattern, $name) === 1;
+ }
+
   private function is_valid_tracker_id($tracker_id)
     {
         // Your existing database connection code
-        $servername = "your_database_server";
-        $username = "your_username_server";
-        $password = "your_password";
-        $dbname = "your_database_name";
+        $servername = "localhost";
+        $username = "tiizaco1_wp133";
+        $password = "";
+        $dbname = "tiizaco1_wp133";
 
         $conn = new mysqli($servername, $username, $password, $dbname); 
 

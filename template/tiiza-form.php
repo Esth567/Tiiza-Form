@@ -9,24 +9,27 @@
    <div class="name-container">
      <div class="name-field">
         <label for="first_name">First Name</label>
-        <input type="text" id="first_name" name="first_name" placeholder="First Name" pattern=".{3,}" title="Please enter at least 3 characters" required>
+        <input type="text" id="first_name" name="first_name" placeholder="First Name" pattern="[A-Za-z]{3,}" title="Please enter minimum of 3 characters" oninput="validateName('first_name')" required>
+        <p class="error-message" id="first_name-error"></p>
    </div>
 
   <div class="name-field">
     <label for="middle_name">Middle Name</label>
-    <input type="text" id="middle_name" name="middle_name" placeholder="Middle Name" pattern=".{3,}" title="Please enter at least 3 characters">
+    <input type="text" id="middle_name" name="middle_name" placeholder="Middle Name" pattern="[A-Za-z]{3,}" oninput="validateName('middle_name')" title="Please enter at least 3 characters">
+     <p class="error-message" id="middle_name-error"></p>
   </div>
 
   <div class="name-field">
     <label for="last_name">Last Name</label>
-    <input type="text" id="last_name" name="last_name" placeholder="Last Name" pattern=".{3,}" title="Please enter at least 3 characters" required>
+    <input type="text" id="last_name" name="last_name" placeholder="Last Name" pattern="[A-Za-z]{3,}" oninput="validateName('last_name')" title="Please enter at least 3 characters" required>
+    <p class="error-message" id="last_name-error"></p>
   </div>
 </div>
 
 <div class="form-container">
   <div class="form-group">
     <label for="email">Email</label>
-    <input type="text" id="email" name="email" placeholder="Eg.john@ymail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address" required>
+    <input type="email" id="email" name="email" placeholder="Eg.john@ymail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address" required>
   </div>
 
   <div class="form-group">
@@ -84,7 +87,7 @@
   <div class="message-container">
     <label>Message</label><br />
     <textarea name="message"></textarea><br /><br />
-  </div
+</div>
 
   <button type="submit">Submit form</button>
 
@@ -94,7 +97,23 @@
 
  jQuery(document).ready(function($){
 
+    function validateName(fieldName) {
+    var input = document.getElementById(fieldName);
+    var error = document.getElementById(fieldName + "-error");
     
+    // Regular expression to check if the input contains only alphabets
+    var regex = /^[a-zA-Z]+$/;
+
+    if (!regex.test(input.value)) {
+      error.textContent = "Name must contain only alphabets.";
+      input.setCustomValidity("Invalid input");
+    } else {
+      error.textContent = "";
+      input.setCustomValidity("");
+    }
+  }
+ 
+
     //form submission
     $("#enquiry_form").submit( function(event){
 
@@ -102,6 +121,10 @@
        
       var form = $(this);
       var formData = new FormData(form[0]);
+
+      // Append the file using the correct field name
+      var fileInput = document.getElementById('myFile');
+      formData.append('userfile', fileInput.files[0]);
 
 
       $.ajax({
@@ -113,11 +136,10 @@
       processData: false,
       success: function(response){
 
-        
-        $("#enquiry_form").hide();
-
-        $("#form_success").html(response.message).fadeIn();
-      },
+     // Successful submission
+      $("#enquiry_form").hide();
+      $("#form_success").html(response.message).fadeIn();
+    },
       error: function(){
         
         $("#form_error").html("Error submitting your form").fadeIn();
@@ -126,7 +148,7 @@
 
       })
 
-    });
+    }); 
   });
 
 </script>

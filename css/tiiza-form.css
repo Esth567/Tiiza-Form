@@ -1,5 +1,5 @@
 #enquiry_form {
-  color: aqua;
+  color: #0c0c0c;
   padding: 50px;
 }
 
@@ -17,11 +17,17 @@
 label {
   display: block;
   margin-bottom: 5px;
+  font-size: medium;
+  font-weight: bold;
 }
 
 input {
   width: 100px; /* Adjust the width as needed */
-  padding: 10px;
+  margin-bottom: 20px;
+}
+
+::placeholder {
+  color: gray;
 }
 
 .form-container {
@@ -55,12 +61,4 @@ input {
 .form-group1 {
   flex: 1; /* Distribute available space equally among form rows */
   margin-right: 20px; /* Optional: Add spacing between form rows */
-}
-
-.gender-container {
-  margin-bottom: 20px;
-}
-
-.message-container {
-  margin-top: 20px;
 }
