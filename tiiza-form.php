@@ -177,7 +177,7 @@ if(!class_exists('TiizaForm')) {
     {
       $postmetas = get_post_meta( get_the_ID() ); 
 
-      $files = get_post_meta( get_the_ID(), 'image', true);
+      $file_url = get_post_meta(get_the_ID(), 'image', false);
 
         if (!empty($files)) {
           echo 'Files uploaded:<br>';
@@ -327,7 +327,10 @@ if(!class_exists('TiizaForm')) {
                 }
                 $file_url[] = $movefile;
                 update_post_meta(get_the_ID(), 'image', $file_url);
+            } else {
+                error_log('Error uploading file: ' . print_r($movefile, true));
             }
+
         }
     }
 }

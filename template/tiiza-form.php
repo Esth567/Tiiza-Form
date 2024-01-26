@@ -2,7 +2,7 @@
 <div id="form_success" style="background:green; color:#fff;"></div>
 <div id="form_error" style="background:red; color:#fff;"></div>
 
-<form id="enquiry_form" method="post" enctype="multipart/form-data">
+<form id="enquiry_form" enctype="multipart/form-data">
 
    <?php wp_nonce_field('wp_rest');?>
 
@@ -80,8 +80,7 @@
 
   <div class="image-container">
     <label for="image">Upload Image:</label>
-    <input type="file" id="myFile" name="image">
-    <input type="hidden" name="action" value="handle_image_viewing">
+    <input type="file" name="image" accept="image/*" required><br>
   </div>
 
   <div class="message-container">
@@ -89,7 +88,7 @@
     <textarea name="message"></textarea><br /><br />
 </div>
 
-  <button type="submit">Submit form</button>
+  <button type="submit">Submit form</button>6
 
 </form>
 
@@ -123,8 +122,8 @@
       var formData = new FormData(form[0]);
 
       // Append the file using the correct field name
-      var fileInput = document.getElementById('myFile');
-      formData.append('image', fileInput.files[0]);
+      //var fileInput = document.getElementById('myFile');
+      formData.append('image[]', $('input[name="image"]')[0].files[0]);
 
 
       $.ajax({
