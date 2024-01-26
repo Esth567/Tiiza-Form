@@ -80,7 +80,7 @@
 
   <div class="image-container">
     <label for="image">Upload Image:</label>
-    <input type="file" id="myFile" name="userfile">
+    <input type="file" id="myFile" name="image">
     <input type="hidden" name="action" value="handle_image_viewing">
   </div>
 

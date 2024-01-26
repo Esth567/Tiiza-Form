@@ -175,8 +175,18 @@ if(!class_exists('TiizaForm')) {
 
     public function display_meta_box()
     {
-      $postmetas = get_post_meta( get_the_ID() );
-      
+      $postmetas = get_post_meta( get_the_ID() ); 
+
+      $files = get_post_meta( get_the_ID(), 'image', true);
+
+        if (!empty($files)) {
+          echo 'Files uploaded:<br>';
+          foreach ($files as $file) {
+          echo '<img src="' . $file['url'] . '" width="100" height="100" /><br>';
+      }
+       } else {
+       echo 'Error uploading file.';
+      }
 
       echo '<ul>';
         echo '<li><strong>FirstName</strong>:<br />' . get_post_meta( get_the_ID(), 'first_name', true) . '</li>';
@@ -292,25 +302,41 @@ if(!class_exists('TiizaForm')) {
         return new WP_Rest_Response('Invalid nonce', 422);
       } 
 
-     if (isset($_FILES['userfile'])) {
-    $uploaded_file = $_FILES['userfile'];
+
+      if( ! isset( $_FILES ) || empty( $_FILES ) || ! isset( $_FILES['image']['name'] ) )
+        return;
+
+        if ( ! function_exists( 'wp_handle_upload' ) ) {
+        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+    }
 
     $upload_overrides = array('test_form' => false);
 
-    $movefile = wp_handle_upload($uploaded_file, $upload_overrides);
+    $files = $_FILES['image'];
+    foreach ($files['name'] as $key => $value) {
+      if ($files['name'][$key]) {
+        $uploadedfile = array(
+            'name'     => $files['name'][$key],
+            'type'     => $files['type'][$key],
+            'tmp_name' => $files['tmp_name'][$key],
+            'error'    => $files['error'][$key],
+            'size'     => $files['size'][$key]
+        );
 
-    if (!is_wp_error($movefile)) {
-        update_option('image_url', $movefile['url']);
+
+    $movefile = wp_handle_upload( $uploadedfile, $upload_overrides);
+
+    if ( $movefile && !isset( $movefile['error'] ) ) {
+
+      $file_url = get_post_meta( get_the_ID(), 'image', true );
+      if( empty( $file_url ) ) {
+         $file_url = array();
+      }
+       $file_url[] = $movefile;
+          update_post_meta( get_the_ID(), 'image', $file_url  );
+      
     }
 
-    $file_url = get_option('image_url');
-
-    if (!empty($file_url)) {
-        echo '<img src="' . esc_url($file_url) . '" />';
-    } else {
-        echo 'Error uploading file.';
-    }
-}
 
 
       // Validate tracker_id against the database
