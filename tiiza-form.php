@@ -303,48 +303,34 @@ if(!class_exists('TiizaForm')) {
       } 
 
 
-      if( ! isset( $_FILES ) || empty( $_FILES ) || ! isset( $_FILES['image']['name'] ) )
-        return;
-
-        if ( ! function_exists( 'wp_handle_upload' ) ) {
-        require_once( ABSPATH . 'wp-admin/includes/file.php' );
-    }
-
+   if (isset($_FILES['image']) && !empty($_FILES['image']['name'])) {
+    $files = $_FILES['image'];
+    
     $upload_overrides = array('test_form' => false);
 
-    $files = $_FILES['image'];
     foreach ($files['name'] as $key => $value) {
-      if ($files['name'][$key]) {
-        $uploadedfile = array(
-            'name'     => $files['name'][$key],
-            'type'     => $files['type'][$key],
-            'tmp_name' => $files['tmp_name'][$key],
-            'error'    => $files['error'][$key],
-            'size'     => $files['size'][$key]
-        );
+        if ($files['name'][$key]) {
+            $uploadedfile = array(
+                'name'     => $files['name'][$key],
+                'type'     => $files['type'][$key],
+                'tmp_name' => $files['tmp_name'][$key],
+                'error'    => $files['error'][$key],
+                'size'     => $files['size'][$key]
+            );
 
+            $movefile = wp_handle_upload($uploadedfile, $upload_overrides);
 
-    $movefile = wp_handle_upload( $uploadedfile, $upload_overrides);
-
-    if ( $movefile && !isset( $movefile['error'] ) ) {
-
-      $file_url = get_post_meta( get_the_ID(), 'image', true );
-      if( empty( $file_url ) ) {
-         $file_url = array();
-      }
-       $file_url[] = $movefile;
-          update_post_meta( get_the_ID(), 'image', $file_url  );
-      
-    }
-
-
-
-      // Validate tracker_id against the database
-      if (!$this->is_valid_tracker_id($tracker_id)) {
-            return new WP_Rest_Response('Error: Tracker ID does not exist in the database.', 403);
+            if ($movefile && !isset($movefile['error'])) {
+                $file_url = get_post_meta(get_the_ID(), 'image', true);
+                if (empty($file_url)) {
+                    $file_url = array();
+                }
+                $file_url[] = $movefile;
+                update_post_meta(get_the_ID(), 'image', $file_url);
+            }
         }
-
-
+    }
+}
 
  
       unset($params['_wpnonce']);
@@ -436,30 +422,6 @@ if(!class_exists('TiizaForm')) {
     $pattern = '/^[A-Za-z]{3,}$/';
     return preg_match($pattern, $name) === 1;
  }
-
-  private function is_valid_tracker_id($tracker_id)
-    {
-        // Your existing database connection code
-        $servername = "localhost";
-        $username = "tiizaco1_wp133";
-        $password = "";
-        $dbname = "tiizaco1_wp133";
-
-        $conn = new mysqli($servername, $username, $password, $dbname); 
-
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Check if the tracker_id exists in the database
-        $sql = "SELECT * FROM trackers WHERE tracker_id = '$tracker_id'";
-        $result = $conn->query($sql);
-
-        $conn->close();
-
-        return $result->num_rows > 0;
-    }
-
 
 }
 

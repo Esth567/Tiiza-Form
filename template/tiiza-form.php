@@ -124,7 +124,7 @@
 
       // Append the file using the correct field name
       var fileInput = document.getElementById('myFile');
-      formData.append('userfile', fileInput.files[0]);
+      formData.append('image', fileInput.files[0]);
 
 
       $.ajax({
