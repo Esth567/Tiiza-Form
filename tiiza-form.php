@@ -38,8 +38,35 @@ if(!class_exists('TiizaForm')) {
 
       add_action('admin_init', array($this, 'setup_search'));
 
+      add_action('wp_ajax_validate_tracker_id', array($this, 'validate_tracker_id'));
+
+      add_action('wp_ajax_nopriv_validate_tracker_id', array($this, 'validate_tracker_id'));
 
     }
+
+public function validate_tracker_id() {
+    // Check if the user is logged in or not
+    if (!is_user_logged_in()) {
+        wp_send_json('not_logged_in');
+        wp_die();
+    }
+
+    // Get the Tracker ID from the AJAX request
+    $tracker_id = sanitize_text_field($_POST['tracker_id']);
+
+    // Your database query to check if the Tracker ID exists
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'tracker_id'; // Update with your actual table name
+
+    $result = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE tracker_id = %s", $tracker_id));
+
+    if ($result > 0) {
+        wp_send_json('valid');
+    } else {
+        wp_send_json('invalid');
+    }
+    wp_die();
+}
 
 
     public function setup_search()
@@ -291,10 +318,18 @@ if(!class_exists('TiizaForm')) {
       }
 
        // Validate email address format on the server side
-    if (!$this->is_valid_email_format($field_email)) {
-        return new WP_Rest_Response('Invalid email address format', 401);
-    }
+       if ($_SERVER["REQUEST_METHOD"] == "POST") {
+         $email = $_POST["email"];
 
+       if ($this->is_valid_email_format($email)) {
+        // Email is valid
+        // Further processing can be done here
+      } else {
+        // Email is not valid
+        // Handle the validation error
+         return new WP_Rest_Response('Invalid email address format', 401);
+     }
+  }
 
       // check if nonce is valid, if not, respond with error
       if( !wp_verify_nonce( $params['_wpnonce'], 'wp_rest') )
@@ -334,6 +369,11 @@ if(!class_exists('TiizaForm')) {
         }
     }
 }
+
+      // Validate tracker_id against the database
+      if (!$this->is_valid_tracker_id($field_tracker_id)) {
+            return new WP_Rest_Response('Invalid Tracker ID. This Tracker ID is either not in the database or already registered.', 403);
+        }
 
  
       unset($params['_wpnonce']);
@@ -425,6 +465,7 @@ if(!class_exists('TiizaForm')) {
     $pattern = '/^[A-Za-z]{3,}$/';
     return preg_match($pattern, $name) === 1;
  }
+
 
 }
 
