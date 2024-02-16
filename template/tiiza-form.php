@@ -198,14 +198,13 @@
                     trackerIdInput.setCustomValidity('Invalid Tracker ID. This Tracker ID is either not in the database or already registered.');
                     trackerIdError.textContent = 'Invalid Tracker ID. This Tracker ID is either not in the database or already registered.';
                     trackerIdError.style.color = 'red';
-                } else if (response === 'not_logged_in') {
+                } else if (response === 'valid') {
+                   trackerIdInput.setCustomValidity('');
+                   trackerIdError.textContent = '';
+                   trackerIdError.style.color = '';
+               } else if (response === 'not_logged_in') {
                 // Handle not logged in case if needed
-                }
-                else {
-                    trackerIdInput.setCustomValidity('');
-                    trackerIdError.textContent = '';
-                    trackerIdError.style.color = '';
-                }
+               }
             },
             error: function() {
                 // Handle error if needed

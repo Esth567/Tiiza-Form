@@ -40,11 +40,9 @@ if(!class_exists('TiizaForm')) {
 
       add_action('wp_ajax_validate_tracker_id', array($this, 'validate_tracker_id'));
 
-      add_action('wp_ajax_nopriv_validate_tracker_id', array($this, 'validate_tracker_id'));
-
     }
 
-public function validate_tracker_id() {
+  public function validate_tracker_id() {
     // Check if the user is logged in or not
     if (!is_user_logged_in()) {
         wp_send_json('not_logged_in');
@@ -52,13 +50,13 @@ public function validate_tracker_id() {
     }
 
     // Get the Tracker ID from the AJAX request
-    $tracker_id = sanitize_text_field($_POST['tracker_id']);
+    $tracker_id = isset($_POST['tracker_id']) ? intval($_POST['tracker_id']) : 0;
 
     // Your database query to check if the Tracker ID exists
     global $wpdb;
     $table_name = $wpdb->prefix . 'tracker_id'; // Update with your actual table name
 
-    $result = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE tracker_id = %s", $tracker_id));
+    $result = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE tracker_id = %d", $tracker_id));
 
     if ($result > 0) {
         wp_send_json('valid');
@@ -67,6 +65,7 @@ public function validate_tracker_id() {
     }
     wp_die();
 }
+
 
 
     public function setup_search()
@@ -331,6 +330,11 @@ public function validate_tracker_id() {
      }
   }
 
+    // Validate tracker_id against the database
+    if (!$this->is_valid_tracker_id($field_tracker_id)) {
+        return new WP_Rest_Response('Invalid Tracker ID. This Tracker ID is either not in the database or already registered.', 403);
+    }
+
       // check if nonce is valid, if not, respond with error
       if( !wp_verify_nonce( $params['_wpnonce'], 'wp_rest') )
       {
@@ -465,6 +469,31 @@ public function validate_tracker_id() {
     $pattern = '/^[A-Za-z]{3,}$/';
     return preg_match($pattern, $name) === 1;
  }
+
+ private function is_valid_tracker_id($tracker_id) {
+    // Call the validate_tracker_id function to check the validity of the tracker ID
+    $response = $this->validate_tracker_id_from_database($tracker_id);
+    return $response === 'valid';
+}
+
+private function validate_tracker_id_from_database($tracker_id) {
+    // Ensure to properly sanitize and validate the tracker ID before querying the database
+    $tracker_id = intval($tracker_id); // Sanitize the tracker ID as an integer
+
+    // Your database query to check if the Tracker ID exists
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'tracker_id'; // Update with your actual table name
+
+    // Query to check if the tracker ID exists in the database
+    $result = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE tracker_id = %d", $tracker_id));
+
+    // Check the result of the query
+    if ($result > 0) {
+        return 'valid'; // Tracker ID is valid
+    } else {
+        return 'invalid'; // Tracker ID is invalid
+    }
+}
 
 
 }
