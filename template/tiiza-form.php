@@ -60,7 +60,7 @@
  <div class="form-container2">
   <div class="form-row">
     <label for="tracker_id">Tracker ID</label>
-    <input type="text" id="tracker_number" name="tracker_number" title="Please enter a valid Tracker ID" required>
+    <input type="text" id="tracker_id" name="tracker_id" title="Please enter a valid Tracker ID" required>
     <p class="error-message" id="tracker_id-error"></p>
   </div>
 

@@ -1,6 +1,6 @@
 <?php
 // Assuming you have a form field named 'tracker_number'
-$trackerNumber = $_POST['tracker_number'];
+$trackerNumber = $_POST['tracker_id'];
 
 // Connect to your database (Update the credentials as needed)
 $servername = "localhost";
@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 }
 
 // Search for the tracker number in the database
-$stmt = $conn->prepare("SELECT tracker_id FROM tracker_id WHERE tracker_id = ?");
+$stmt = $conn->prepare("SELECT TrackerNumber FROM tracker_id WHERE TrackerNumber = ?");
 $stmt->bind_param("s", $trackerNumber);
 $stmt->execute();
 $stmt->store_result();
