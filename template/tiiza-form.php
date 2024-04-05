@@ -59,9 +59,9 @@
 
  <div class="form-container2">
   <div class="form-row">
-    <label for="tracker_id">Tracker ID</label>
-    <input type="text" id="tracker_id" name="tracker_id" title="Please enter a valid Tracker ID" required>
-    <p class="error-message" id="tracker_id-error"></p>
+    <label for="tracker_number">Tracker ID</label>
+    <input type="text" id="tracker_number" name="tracker_number" required>
+    <p class="error-message" id="tracker_number-error"></p>
   </div>
 
   <div class="form-row">
@@ -179,39 +179,6 @@
   $('#phone').on('input', validatePhoneNumber);
 
 
-  // Tracker ID validation
-    $('#tracker_id').on('input', function() {
-        validateTrackerId();
-    });
-
-    function validateTrackerId() {
-        var trackerIdInput = document.getElementById('tracker_id');
-        var trackerId = trackerIdInput.value;
-        var trackerIdError = document.getElementById('tracker_id-error');
-
-        $.ajax({
-            type: 'POST',
-            url: '<?php echo admin_url("admin-ajax.php"); ?>',
-            data: { action: 'validate_tracker_id', tracker_id: trackerId },
-            success: function(response) {
-                if (response === 'invalid') {
-                    trackerIdInput.setCustomValidity('Invalid Tracker ID. This Tracker ID is either not in the database or already registered.');
-                    trackerIdError.textContent = 'Invalid Tracker ID. This Tracker ID is either not in the database or already registered.';
-                    trackerIdError.style.color = 'red';
-                } else if (response === 'valid') {
-                   trackerIdInput.setCustomValidity('');
-                   trackerIdError.textContent = '';
-                   trackerIdError.style.color = '';
-               } else if (response === 'not_logged_in') {
-                // Handle not logged in case if needed
-               }
-            },
-            error: function() {
-                // Handle error if needed
-            }
-        });
-    }
-
 
    $('#image').on('change', function() {
         // Get the file name
@@ -220,7 +187,41 @@
         // Display the file name in the span element
         $('#file-name').text(fileName);
     });
- 
+
+
+     // Function to validate Tracker ID
+     function validateTrackerID() {
+        var trackerInput = document.getElementById('tracker_number');
+        var trackerID = trackerInput.value;
+        var error = document.getElementById('tracker_number-error');
+
+        // Regular expression to check for a valid Tracker ID format
+        var trackerPattern = /^[a-zA-Z0-9]+$/;
+
+        if (!trackerPattern.test(trackerID)) {
+            trackerInput.setCustomValidity("Tracker ID must contain only alphanumeric characters.");
+            error.textContent = "Tracker ID must contain only alphanumeric characters.";
+            error.style.color = "red"; // Apply red color to the error message
+        } else if (trackerID.length < 3) {
+            trackerInput.setCustomValidity("Tracker ID must be at least 3 characters long.");
+            error.textContent = "Tracker ID must be at least 3 characters long.";
+            error.style.color = "red"; // Apply red color to the error message
+        } else {
+            trackerInput.setCustomValidity("");
+            error.textContent = "";
+            error.style.color = ""; // Reset the color to default
+        }
+    }
+
+   
+    // Attach form submission handling
+    $('#enquiry_form').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        var trackerNumber = $('#tracker_number').val();
+        checkTrackerNumberExists(trackerNumber);
+    });
+
 
     //form submission
     $("#enquiry_form").submit( function(event){

@@ -38,34 +38,7 @@ if(!class_exists('TiizaForm')) {
 
       add_action('admin_init', array($this, 'setup_search'));
 
-      add_action('wp_ajax_validate_tracker_id', array($this, 'validate_tracker_id'));
-
     }
-
-  public function validate_tracker_id() {
-    // Check if the user is logged in or not
-    if (!is_user_logged_in()) {
-        wp_send_json('not_logged_in');
-        wp_die();
-    }
-
-    // Get the Tracker ID from the AJAX request
-    $tracker_id = isset($_POST['tracker_id']) ? intval($_POST['tracker_id']) : 0;
-
-    // Your database query to check if the Tracker ID exists
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'tracker_id'; // Update with your actual table name
-
-    $result = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE tracker_id = %d", $tracker_id));
-
-    if ($result > 0) {
-        wp_send_json('valid');
-    } else {
-        wp_send_json('invalid');
-    }
-    wp_die();
-}
-
 
 
     public function setup_search()
@@ -375,45 +348,6 @@ if(!class_exists('TiizaForm')) {
     }
 }
 
-      // Validate tracker_id against the database
-      if (!$this->is_valid_tracker_id($field_tracker_id)) {
-            return new WP_Rest_Response('Invalid Tracker ID. This Tracker ID is either not in the database or already registered.', 403);
-        }
-
-        // Assuming you have a form field named 'tracker_number'
-$trackerNumber = $_POST['tracker_id'];
-
-// Connect to your database (Update the credentials as needed)
-$servername = "localhost";
-$username = "estherb";
-$password = "";
-$dbname = "tiizaco1_wp133";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Search for the tracker number in the database
-$stmt = $conn->prepare("SELECT TrackerNumber FROM tracker_id WHERE TrackerNumber = ?");
-$stmt->bind_param("s", $trackerNumber);
-$stmt->execute();
-$stmt->store_result();
-
-if ($stmt->num_rows > 0) {
-    // Tracker number found in the database, proceed with form submission
-    // You can insert further logic here to process the form submission
-    echo "Tracker number validated successfully!";
-} else {
-    // Tracker number not found in the database, show an error message
-    echo "Invalid tracker number!";
-}
-
-$stmt->close();
-$conn->close(); 
-
  
       unset($params['_wpnonce']);
       unset($params['_wp_http_referer']);
@@ -504,31 +438,6 @@ $conn->close();
     $pattern = '/^[A-Za-z]{3,}$/';
     return preg_match($pattern, $name) === 1;
  }
-
- private function is_valid_tracker_id($tracker_id) {
-    // Call the validate_tracker_id function to check the validity of the tracker ID
-    $response = $this->validate_tracker_id_from_database($tracker_id);
-    return $response === 'valid';
-}
-
-private function validate_tracker_id_from_database($tracker_id) {
-    // Ensure to properly sanitize and validate the tracker ID before querying the database
-    $tracker_id = intval($tracker_id); // Sanitize the tracker ID as an integer
-
-    // Your database query to check if the Tracker ID exists
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'tracker_id'; // Update with your actual table name
-
-    // Query to check if the tracker ID exists in the database
-    $result = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE tracker_id = %d", $tracker_id));
-
-    // Check the result of the query
-    if ($result > 0) {
-        return 'valid'; // Tracker ID is valid
-    } else {
-        return 'invalid'; // Tracker ID is invalid
-    }
-}
 
 
 }
