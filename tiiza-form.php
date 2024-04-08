@@ -308,6 +308,55 @@ if(!class_exists('TiizaForm')) {
         return new WP_Rest_Response('Invalid Tracker ID. This Tracker ID is either not in the database or already registered.', 403);
     }
 
+    
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      // Validate and sanitize the Tracker ID input
+      $trackerNumber = trim($_POST["tracker_number"]);
+  
+      // Check if the Tracker ID is not empty
+      if (!empty($trackerNumber)) {
+          // Connect to the database
+          $servername = "localhost";
+          $username = "estherb";
+          $password = "";
+          $dbname = "tiizaco1_wp133";
+  
+          // Create connection
+          $conn = new mysqli($servername, $username, $password, $dbname);
+  
+          // Check connection
+          if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+          }
+  
+          // Prepare and execute the SQL statement to check if the Tracker ID exists in the database
+          $sql = "SELECT * FROM tracker_id WHERE track_id = ?";
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param("s", $trackerNumber);
+          $stmt->execute();
+          $result = $stmt->get_result();
+  
+          if ($result->num_rows > 0) {
+              // Tracker ID exists in the database
+              echo json_encode(array("success" => true, "message" => "Tracker ID exists in the database"));
+          } else {
+              // Tracker ID does not exist in the database
+              echo json_encode(array("success" => false, "message" => "Tracker ID not found in the database"));
+          }
+  
+          // Close the connection
+          $stmt->close();
+          $conn->close();
+      } else {
+          // Tracker ID is empty
+          echo json_encode(array("success" => false, "message" => "Tracker ID is required"));
+      }
+  } else {
+      // Form not submitted
+      echo json_encode(array("success" => false, "message" => "Form not submitted"));
+  }
+
+
       // check if nonce is valid, if not, respond with error
       if( !wp_verify_nonce( $params['_wpnonce'], 'wp_rest') )
       {

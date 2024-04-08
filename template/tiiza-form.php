@@ -189,40 +189,6 @@
     });
 
 
-     // Function to validate Tracker ID
-     function validateTrackerID() {
-        var trackerInput = document.getElementById('tracker_number');
-        var trackerID = trackerInput.value;
-        var error = document.getElementById('tracker_number-error');
-
-        // Regular expression to check for a valid Tracker ID format
-        var trackerPattern = /^[a-zA-Z0-9]+$/;
-
-        if (!trackerPattern.test(trackerID)) {
-            trackerInput.setCustomValidity("Tracker ID must contain only alphanumeric characters.");
-            error.textContent = "Tracker ID must contain only alphanumeric characters.";
-            error.style.color = "red"; // Apply red color to the error message
-        } else if (trackerID.length < 3) {
-            trackerInput.setCustomValidity("Tracker ID must be at least 3 characters long.");
-            error.textContent = "Tracker ID must be at least 3 characters long.";
-            error.style.color = "red"; // Apply red color to the error message
-        } else {
-            trackerInput.setCustomValidity("");
-            error.textContent = "";
-            error.style.color = ""; // Reset the color to default
-        }
-    }
-
-   
-    // Attach form submission handling
-    $('#enquiry_form').submit(function(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        var trackerNumber = $('#tracker_number').val();
-        checkTrackerNumberExists(trackerNumber);
-    });
-
-
     //form submission
     $("#enquiry_form").submit( function(event){
 

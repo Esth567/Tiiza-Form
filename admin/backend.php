@@ -1,6 +1,6 @@
 <?php
 // Assuming you have a form field named 'tracker_number'
-$trackerNumber = $_POST['tracker_id'];
+$trackerNumber = $_POST['tracker_number'];
 
 // Connect to your database (Update the credentials as needed)
 $servername = "localhost";
