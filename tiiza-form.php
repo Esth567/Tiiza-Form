@@ -38,8 +38,28 @@ if(!class_exists('TiizaForm')) {
 
       add_action('admin_init', array($this, 'setup_search'));
 
+      register_activation_hook(__FILE__, array($this, 'tracking_numbers_activate'));
+
+
+
     }
 
+       
+      public function tracking_numbers_activate() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'tracker_numbers';
+        $charset_collate = $wpdb->get_charset_collate();
+    
+        $sql = "CREATE TABLE $table_name (
+          id mediumint(9) NOT NULL AUTO_INCREMENT,
+          trackerNumber varchar(255) NOT NULL,
+          PRIMARY KEY  (id)
+        ) $charset_collate;";
+    
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+     }
+    
 
     public function setup_search()
     {
@@ -243,7 +263,7 @@ if(!class_exists('TiizaForm')) {
 
     public function display_tiiza_form() 
     {
-      require 'template/tiiza-form.php';
+      require 'template/form-field.php';
     }
 
 
@@ -308,61 +328,34 @@ if(!class_exists('TiizaForm')) {
         return new WP_Rest_Response('Invalid Tracker ID. This Tracker ID is either not in the database or already registered.', 403);
     }
 
-    
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      // Validate and sanitize the Tracker ID input
-      $trackerNumber = trim($_POST["tracker_number"]);
-  
-      // Check if the Tracker ID is not empty
-      if (!empty($trackerNumber)) {
-          // Connect to the database
-          $servername = "localhost";
-          $username = "estherb";
-          $password = "";
-          $dbname = "tiizaco1_wp133";
-  
-          // Create connection
-          $conn = new mysqli($servername, $username, $password, $dbname);
-  
-          // Check connection
-          if ($conn->connect_error) {
-              die("Connection failed: " . $conn->connect_error);
-          }
-  
-          // Prepare and execute the SQL statement to check if the Tracker ID exists in the database
-          $sql = "SELECT * FROM tracker_id WHERE track_id = ?";
-          $stmt = $conn->prepare($sql);
-          $stmt->bind_param("s", $trackerNumber);
-          $stmt->execute();
-          $result = $stmt->get_result();
-  
-          if ($result->num_rows > 0) {
-              // Tracker ID exists in the database
-              echo json_encode(array("success" => true, "message" => "Tracker ID exists in the database"));
-          } else {
-              // Tracker ID does not exist in the database
-              echo json_encode(array("success" => false, "message" => "Tracker ID not found in the database"));
-          }
-  
-          // Close the connection
-          $stmt->close();
-          $conn->close();
-      } else {
-          // Tracker ID is empty
-          echo json_encode(array("success" => false, "message" => "Tracker ID is required"));
-      }
-  } else {
-      // Form not submitted
-      echo json_encode(array("success" => false, "message" => "Form not submitted"));
-  }
-
 
       // check if nonce is valid, if not, respond with error
       if( !wp_verify_nonce( $params['_wpnonce'], 'wp_rest') )
       {
         return new WP_Rest_Response('Invalid nonce', 422);
       } 
-      
+
+
+      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracker_number'])) {
+        // Sanitize the input
+        $tracker_number = sanitize_text_field($_POST['tracker_number']);
+
+        // Query the database to check if the tracker number exists
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'tracker_numbers';
+        $existing_tracker = $wpdb->get_var($wpdb->prepare(
+            "SELECT trackerNumber FROM $table_name WHERE trackerNumber = %s",
+            $tracker_number
+        ));
+
+        if ($existing_tracker) {           
+            // Tracker ID exists in the database
+            echo json_encode(array("success" => true, "message" => "Tracker ID exists in the database"));
+        } else {
+            // Tracker ID does not exist in the database
+            echo json_encode(array("success" => false, "message" => "Tracker ID not found in the database"));
+        }
+    }
       
 
    if (isset($_FILES['image']) && !empty($_FILES['image']['name'])) {

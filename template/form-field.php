@@ -157,6 +157,7 @@
     });
 
     
+  
     function validatePhoneNumber() {
     var phoneInput = document.getElementById('phone');
     var phoneNumber = phoneInput.value;
@@ -179,7 +180,6 @@
   $('#phone').on('input', validatePhoneNumber);
 
 
-
    $('#image').on('change', function() {
         // Get the file name
         var fileName = $(this).val().split('\\').pop();
@@ -187,7 +187,7 @@
         // Display the file name in the span element
         $('#file-name').text(fileName);
     });
-
+  
 
     //form submission
     $("#enquiry_form").submit( function(event){
